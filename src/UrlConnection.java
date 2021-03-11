@@ -12,21 +12,42 @@ import java.util.ArrayList;
 
 public class UrlConnection{
 
-        private static String makeName = "Honda";
+    private static int mfrID = 955;
+
+
+    public static int getMfrID() {
+        return mfrID;
+    }
+
+    public static void setMfrID(int mfrID) {
+        UrlConnection.mfrID = mfrID;
+    }
+        private static String makeName = String.valueOf(mfrID) ;
+
+        public static String[] getHostList() {
+        return HostList;
+        }
+
+        public static void setHostList(String[] hostList) {
+        HostList = hostList;
+        }
+
+        private static String[] HostList = new String[100];
+        private static int nameCounter = 0;
 
         public static String getMakeName(){
             return makeName;
         }
 
-    public static void setMakeName(String makeName) {
+        public static void setMakeName(String makeName) {
         UrlConnection.makeName = makeName;
     }
 
-    private static final String USER_AGENT = "Mozilla/5.0";
+        private static final String USER_AGENT = "Mozilla/5.0";
 
         private static final String GET_URL = "https://vpic.nhtsa.dot.gov/api/vehicles/GetAllMakes?format=json";
 
-        private static final String GET_URL_GET_MANUFACTURING_DETAILS = "https://vpic.nhtsa.dot.gov/api/vehicles/GetManufacturerDetails/" + makeName   + "?format=json";
+        private static  final String GET_URL_GET_MANUFACTURING_DETAILS = "https://vpic.nhtsa.dot.gov/api/vehicles/GetManufacturerDetails/";// +  makeName  + "?format=json";
 
         private static final String POST_URL = "";
 
@@ -37,14 +58,20 @@ public class UrlConnection{
 
 
 
+            Long start = System.currentTimeMillis();
+            for(int i = 0; i<100; i++){
+                getGetUrlGetManufacturingDetails();
+                setMakeName(String.valueOf(mfrID));
+                setMfrID(mfrID++);
+                mfrID++;
 
+                System.out.println(mfrID +" "+ makeName);
 
-             UrlConnection.setMakeName(sendGETRetrievesManNames());
+            }
 
+            Long end = System.currentTimeMillis();
 
-           // sendGET();
-            //System.out.println("GET DONE");
-           getGetUrlGetManufacturingDetails();
+            System.out.println("Time needed to run: " + (end-start) + " milliseconds");
             System.out.println("GET SHIT DONE");
           //sendGETRetrievesManNames();
             System.out.println("Top 1OO manufacturers Names");
@@ -79,7 +106,7 @@ public class UrlConnection{
             }
         }
 
-    private static void sendGETRetrievesManNames() throws IOException {
+    private static String sendGETRetrievesManNames() throws IOException {
         URL obj = new URL(GET_URL);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("GET");
@@ -99,20 +126,32 @@ public class UrlConnection{
             ManufacturerResponse userArray = gson.fromJson(response.toString(), ManufacturerResponse.class);
             ArrayList<Pojo> user = userArray.getResults();
 
-            for(int i = 0;i<100; i++){
-                System.out.println(userArray.getResults().get(i).getMake_Name());
-            }
-           /* for(Pojo user : userArray.getResults()) {
-                System.out.println(user);
-                System.out.println();
-            }*/
+
+                System.out.println(userArray.getResults().get(nameCounter).getMake_Name());
+               // System.out.println(makeName + "alpha");
+                setMakeName(userArray.getResults().get(nameCounter).getMake_Name());
+              //  System.out.println(makeName+ "beta");
+            System.out.println(makeName);
+            //nameCounter++;
+
+            return userArray.getResults().get(nameCounter).getMake_Name();
+
+
         } else {
-            System.out.println("GET request not worked");
+            return "GET request not worked";
+
         }
     }
-
+        /*
+        url no cambiaba, no sabia porque
+        porque es una variable estatica solo se asigna una vez al principio y ya no cambia
+         */
         private static void getGetUrlGetManufacturingDetails() throws IOException{
-            URL obj = new URL(GET_URL_GET_MANUFACTURING_DETAILS);
+            System.out.println(GET_URL_GET_MANUFACTURING_DETAILS);
+            String url = GET_URL_GET_MANUFACTURING_DETAILS + makeName +"?format=json";
+            HostList[]
+            System.out.println(url);
+            URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("User-Agent", USER_AGENT);
