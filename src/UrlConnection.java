@@ -47,7 +47,11 @@ public class UrlConnection{
 
         private static final String GET_URL = "https://vpic.nhtsa.dot.gov/api/vehicles/GetAllMakes?format=json";
 
-        private static  final String GET_URL_GET_MANUFACTURING_DETAILS = "https://vpic.nhtsa.dot.gov/api/vehicles/GetManufacturerDetails/";// +  makeName  + "?format=json";
+    public static String getGetUrlGetManufacturingDetails() {
+        return GET_URL_GET_MANUFACTURING_DETAILS;
+    }
+
+    private static  final String GET_URL_GET_MANUFACTURING_DETAILS = "https://vpic.nhtsa.dot.gov/api/vehicles/GetManufacturerDetails/";// +  makeName  + "?format=json";
 
         private static final String POST_URL = "";
 
@@ -58,15 +62,20 @@ public class UrlConnection{
 
 
 
+
+
             Long start = System.currentTimeMillis();
             for(int i = 0; i<100; i++){
-                getGetUrlGetManufacturingDetails();
+                getGetUrlGetManufacturingDetails(i);
                 setMakeName(String.valueOf(mfrID));
                 setMfrID(mfrID++);
                 mfrID++;
-
                 System.out.println(mfrID +" "+ makeName);
 
+
+            }
+            for(int i = 0; i<10; i++){
+                System.out.println(HostList[i]);
             }
 
             Long end = System.currentTimeMillis();
@@ -146,10 +155,10 @@ public class UrlConnection{
         url no cambiaba, no sabia porque
         porque es una variable estatica solo se asigna una vez al principio y ya no cambia
          */
-        private static void getGetUrlGetManufacturingDetails() throws IOException{
+        private static void getGetUrlGetManufacturingDetails(int i) throws IOException{
             System.out.println(GET_URL_GET_MANUFACTURING_DETAILS);
             String url = GET_URL_GET_MANUFACTURING_DETAILS + makeName +"?format=json";
-            HostList[]
+            HostList[i] = url;
             System.out.println(url);
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -214,6 +223,13 @@ public class UrlConnection{
             } else {
                 System.out.println("POST request not worked");
             }
+        }
+
+    public static void makeHostList(){
+        int iterador = 955;
+        for (int i = 0; i<10; i++)
+            HostList[i] = UrlConnection.getGetUrlGetManufacturingDetails() + iterador + "?format=json" ;
+        iterador++;
         }
 
 }
